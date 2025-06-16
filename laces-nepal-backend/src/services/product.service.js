@@ -1,6 +1,6 @@
 import prisma from "../prisma/prismaClient.js";
 
-export const getPaginatedProducts = async (page, limit) => {
+export const getPaginatedProductsService = async (page, limit) => {
     const skip = (page - 1) * limit;
     const products = await prisma.product.findMany({
         skip: skip,
@@ -13,11 +13,20 @@ export const getPaginatedProducts = async (page, limit) => {
     return products;
 };
 
-export const createNewProduct = async (productData) => {
+export const createNewProductService = async (productData) => {
     const newProduct = await prisma.product.create({
         data: {
             ...productData,
         },
     });
     return newProduct;
+}
+
+export const deleteProductByIdService = async (productId) => {
+    const deletedProduct = await prisma.product.delete({
+        where: {
+            id: productId,
+        },
+    });
+    return deletedProduct;
 }

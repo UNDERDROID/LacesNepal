@@ -1,4 +1,4 @@
-import { createCategoryService } from "../services/category.service.js";
+import { createCategoryService, getAllCategoriesService } from "../services/category.service.js";
 
 export const createCategory = async (req, res) => {
     try {
@@ -20,3 +20,13 @@ export const createCategory = async (req, res) => {
         res.status(status).json({ message });
     }
 };
+
+export const getAllCategories = async (req, res) => {
+    try {
+        const categories = await getAllCategoriesService();
+        return res.status(200).json(categories);
+    } catch (error) {
+        console.error("Error fetching categories:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}

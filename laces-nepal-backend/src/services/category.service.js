@@ -11,3 +11,12 @@ export const createCategoryService = async (name) => {
     });
     return category;
 };
+
+export const getAllCategoriesService = async () => {
+    const categories = await prisma.category.findMany({
+        orderBy: {
+            name: 'desc',
+        },
+    });
+    return categories;
+}
