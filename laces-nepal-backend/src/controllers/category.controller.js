@@ -1,4 +1,9 @@
-import { createCategoryService, getAllCategoriesService } from "../services/category.service.js";
+import {
+    createCategoryService,
+    getAllCategoriesService,
+    addProductToCategoryService,
+    deleteCategoryService
+} from "../services/category.service.js";
 
 export const createCategory = async (req, res) => {
     try {
@@ -27,6 +32,40 @@ export const getAllCategories = async (req, res) => {
         return res.status(200).json(categories);
     } catch (error) {
         console.error("Error fetching categories:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export const addProductToCategory = async (req, res) => {
+    try {
+        const { categoryId, productId } = req.body;
+
+        if (!categoryId || !productId) {
+            return res.status(400).json({ message: "Category ID and Product ID are required" });
+        }
+
+        const category = await addProductToCategoryService(categoryId, productId);
+        return res.status(200).json({ message: "Product added to category successfully", category });
+
+    } catch (error) {
+        console.error("Error adding product to category:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export const deleteCategory = async (req, res) => {
+    try {
+        const { categoryId } = req.params;
+
+        if (!categoryId) {
+            return res.status(400).json({ message: "Category ID is required" });
+        }
+
+        const deletedCategory = await deleteCategoryService(categoryId);
+        return res.status(200).json({ message: "Category deleted successfully", deletedCategory });
+
+    } catch (error) {
+        console.error("Error deleting category:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 }
