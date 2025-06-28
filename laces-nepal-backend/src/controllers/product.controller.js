@@ -1,5 +1,11 @@
-import { getPaginatedProductsService, createNewProductService, deleteProductByIdService } from "../services/product.service.js";
+import {
+    getPaginatedProductsService,
+    createNewProductService,
+    deleteProductByIdService,
+    updateProductService
+} from "../services/product.service.js";
 import { addProductToCategoryService } from "../services/category.service.js";
+
 export const getProducts = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -69,3 +75,25 @@ export const deleteProduct = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 };
+
+export const updateProduct = async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const productData = req.body;
+
+        if (!productId || !productData) {
+            return res.status(400).json({ message: "Product ID and data are required" });
+        }
+
+        const updatedProduct = await updateProductService(productId, productData);
+
+        if (!updatedProduct) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        res.json(updatedProduct);
+    } catch (error) {
+        console.error("Error updating product:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
