@@ -4,6 +4,7 @@ import {
     deleteProductByIdService,
     updateProductService
 } from "../services/product.service.js";
+import { userHasPermission } from "../services/permission.service.js";
 import { addProductToCategoryService } from "../services/category.service.js";
 
 export const getProducts = async (req, res) => {
@@ -30,6 +31,13 @@ export const createProduct = async (req, res) => {
             stock,
             categoryId,
         } = req.body;
+
+        const userId = req.user.userId;
+
+        const canPost = await userHasPermission(userId, "Create Posts");
+        if (!canPost) {
+            return res.status(403).json({ message: "You do not have permission to create products" });
+        }
 
         if (!name || !price || !stock || !categoryId) {
             return res.status(400).json({ message: "Missing required fields" });

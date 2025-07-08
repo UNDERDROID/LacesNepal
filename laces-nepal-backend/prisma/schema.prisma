@@ -18,15 +18,26 @@ model User {
   email     String   @unique
   name      String?
   password  String
-  role      Role     @default(USER)
+  role      Role[]   @relation("UserRoles")
   orders    Order[]
   createdAt DateTime @default(now())
 }
 
-enum Role {
-  USER
-  ADMIN
+model Role {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  description String?
+  users       User[]       @relation("UserRoles")
+  permissions Permission[] @relation("RolePermissions")
 }
+
+model Permission {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  roles       Role[]   @relation("RolePermissions")
+}
+
 
 
 model Product {

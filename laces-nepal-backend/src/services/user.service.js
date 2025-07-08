@@ -10,6 +10,13 @@ export const getAllUsersService = async (page, limit) => {
         orderBy: {
             createdAt: 'desc',
         },
+        include: {
+            role: {
+                include: {
+                    permissions: true,
+                },
+            },
+        }
     });
     return users;
 }
@@ -31,6 +38,18 @@ export const updateUserService = async (userId, userData) => {
     const updatedUser = await prisma.user.update({
         where: { id: userId },
         data: userData,
+    });
+    return updatedUser;
+}
+
+export const updateUserRoleService = async (userId, roleId) => {
+    const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data: {
+            role: {
+                connect: { id: roleId },
+            },
+        },
     });
     return updatedUser;
 }
@@ -97,3 +116,4 @@ export const refreshTokenService = async (token) => {
         throw new Error('Invalid refresh token' + error.message);
     }
 }
+

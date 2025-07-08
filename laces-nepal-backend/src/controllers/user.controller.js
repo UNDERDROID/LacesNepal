@@ -3,7 +3,8 @@ import {
     createNewUserService,
     loginUserService,
     refreshTokenService,
-    updateUserService
+    updateUserService,
+    updateUserRoleService
 } from "../services/user.service.js";
 
 export const getUsers = async (req, res) => {
@@ -79,6 +80,23 @@ export const updateUser = async (req, res) => {
         res.status(200).json(updatedUser);
     } catch (error) {
         console.error("Error updating user:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+export const updateUserRole = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const { roleId } = req.body;
+
+        if (!userId || !roleId) {
+            return res.status(400).json({ message: "User ID and role ID are required" });
+        }
+
+        const updatedUser = await updateUserRoleService(userId, roleId);
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        console.error("Error updating user role:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 }
